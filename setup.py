@@ -6,6 +6,6 @@ setup(
     version="0.1.0",
     description="Sistema Bancario",
     author="Alex Silva",
-    packages=find_packages(),
-
+    packages=["bcdio"],
+    entry_points={"console_scripts": ["bcdio = bcdio.__main__:main"]}
 )
