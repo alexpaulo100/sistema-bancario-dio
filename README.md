@@ -9,5 +9,5 @@
 - comando para sacar ->> bcdio sacar e o valor, exemplo `bcdio sacar 1000`, haverá um saque de 1000.
 - comando para sair ->> `bcdio sair`.
 - Autor: Alex Silva
-- [Linkedin](linkedin.com/in/alexpaulo100)
+- [Linkedin](https://www.linkedin.com/in/alexpaulo100/)
 
