@@ -7,5 +7,10 @@ setup(
     description="Sistema Bancario",
     author="Alex Silva",
     packages=["bcdio"],
-    entry_points={"console_scripts": ["bcdio = bcdio.__main__:main"]}
+    entry_points={
+        "console_scripts": ["bcdio = bcdio.__main__:main"
+        ]
+    },
+    
+
 )

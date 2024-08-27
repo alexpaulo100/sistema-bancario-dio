@@ -1,4 +1,4 @@
-def main():
-    print("...")
-    print("....")
-    
+from .cli import main
+
+if __name__ == "__main__":
+    main()
