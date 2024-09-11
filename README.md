@@ -54,4 +54,4 @@ Utilizado **rich-click** para uma melhor experiência do usuário em linha de co
 
 **version=[0.1.1]**
 
-
+![bc-dio-novas funcionalidades](https://github.com/user-attachments/assets/f98bff3b-ba68-4135-a4e5-fb4902e41425)
