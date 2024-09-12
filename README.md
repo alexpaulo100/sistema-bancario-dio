@@ -14,8 +14,8 @@ Utilizado **rich-click** para uma melhor experiência do usuário em linha de co
 - **Comando para exibir extrato**: `bcdio extrato`
   - Solicita CPF e número da conta para mostrar o saldo e movimentações.
 
-- **Comando para sacar**: `bcdio sacar [VALOR]`
-  - Exemplo: `bcdio sacar 1000` - Realiza um saque de R$1000,00 da conta especificada.
+- **Comando para sacar**: `bcdio sacar`
+  - Exemplo: `bcdio sacar` - Realiza um saque do usuário e da conta especificada.
 
 - **Comando para criar usuário**: `bcdio criar_usuario`
   - Solicita os detalhes do usuário e cria um novo usuário no sistema.
