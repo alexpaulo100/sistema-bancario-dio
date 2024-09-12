@@ -8,8 +8,8 @@ Utilizado **rich-click** para uma melhor experiência do usuário em linha de co
 
 - Para verificar todos os comandos disponíveis, digite `bcdio --help` no terminal.
 
-- **Comando para depositar**: `bcdio depositar [VALOR]`
-  - Exemplo: `bcdio depositar 1000` - Depositando R$1000,00 na conta especificada.
+- **Comando para depositar**: `bcdio depositar`
+  - Exemplo: `bcdio depositar` - Deposito do usuário e na conta especificada.
 
 - **Comando para exibir extrato**: `bcdio extrato`
   - Solicita CPF e número da conta para mostrar o saldo e movimentações.
