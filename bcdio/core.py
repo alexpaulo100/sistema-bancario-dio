@@ -1,6 +1,6 @@
 import locale
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 
 from sqlmodel import func, select
 
@@ -98,7 +98,6 @@ class SistemaBancario:
             session.add(nova_conta)
             session.commit()
 
-            # Recarrega a instância da conta para garantir que está associada à sessão e obter o número gerado
             session.refresh(nova_conta)
             return nova_conta
 
@@ -124,34 +123,77 @@ class SistemaBancario:
 
     def depositar(self, cpf: str, numero_conta: int, valor: float):
         usuario_id = self._obter_usuario_id_por_cpf(cpf)
-        query = select(Conta).where(
-            Conta.usuario_id == usuario_id, Conta.numero == numero_conta
+        conta = self.session.exec(
+            select(Conta).where(
+                Conta.numero == numero_conta, Conta.usuario_id == usuario_id
+            )
+        ).first()
+
+        if not conta:
+            raise ValueError("Conta não encontrada.")
+
+        # Atualizar o saldo
+        conta.saldo += valor
+
+        # Criar uma nova movimentação
+        movimentacao = Movimentacao(
+            tipo="deposito",
+            valor=valor,
+            data=datetime.now(timezone.utc),
+            conta_id=conta.id,
+            usuario_id=usuario_id,
         )
-        conta = self.session.exec(query).first()
+        self.session.add(movimentacao)
+        self.session.commit()
 
-        if conta:
-            conta.saldo += valor
-            self.session.commit()
+    def _obter_usuario_id_por_cpf(self, cpf: str) -> int:
+        query = select(Usuario).where(Usuario.cpf == cpf)
+        usuario = self.session.exec(query).first()
+        if usuario:
+            return usuario.id
         else:
-            raise ValueError(f"Conta número {numero_conta} não encontrada.")
+            raise ValueError("Usuário não encontrado com o CPF fornecido.")
 
-    def sacar(self, conta_id, valor):
+    def sacar(self, cpf: str, numero_conta: int, valor: float):
         with self.session as session:
-            conta = session.get(Conta, conta_id)
+            # Verifica se o usuário existe
+            usuario_id = self._obter_usuario_id_por_cpf(cpf)
+
+            # Busca a conta com o número fornecido e do usuário especificado
+            conta = session.exec(
+                select(Conta).where(
+                    Conta.numero == numero_conta, Conta.usuario_id == usuario_id
+                )
+            ).first()
+
+            if not conta:
+                raise ValueError("Conta não encontrada.")
+
             if valor <= 0:
                 raise ValueError("Valor do saque deve ser positivo.")
+
             if valor > self.limite:
                 raise ValueError(
                     f"Não foi possível realizar o saque de R$ {valor:.2f}, pois excede o limite de R$ {self.limite:.2f}. Saldo atual: R$ {conta.saldo:.2f}"
                 )
+
             if valor > conta.saldo:
                 raise ValueError("Saldo insuficiente.")
+
+            # Atualiza o saldo da conta
             conta.saldo -= valor
-            extrato = Movimentacao(
-                conta_id=conta_id, tipo="saque", valor=valor, data=datetime.now()
+
+            # Registra a movimentação
+            movimentacao = Movimentacao(
+                tipo="saque",
+                valor=valor,
+                data=datetime.now(timezone.utc),
+                conta_id=conta.id,
+                usuario_id=usuario_id,
             )
-            session.add(extrato)
+            session.add(movimentacao)
             session.commit()
+
             return f"Saque de R$ {valor:.2f} realizado com sucesso!"
 
     def obter_saldo_conta(self, cpf: str, numero_conta: int) -> float:
@@ -186,14 +228,6 @@ class SistemaBancario:
             }
             for mov in movimentacoes
         ]
-
-    def _obter_usuario_id_por_cpf(self, cpf: str) -> int:
-        query = select(Usuario).where(Usuario.cpf == cpf)
-        usuario = self.session.exec(query).first()
-        if usuario:
-            return usuario.id
-        else:
-            raise ValueError("Usuário não encontrado com o CPF fornecido.")
 
     def obter_extrato(self, cpf: str, numero_conta: int):
         with self.session as session:

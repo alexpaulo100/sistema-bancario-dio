@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -44,23 +45,15 @@ class Conta(SQLModel, table=True):
 
 
 class Movimentacao(SQLModel, table=True):
-    __tablename__ = "movimentacao"  # Nome da tabela ajustado
+    __tablename__ = "movimentacao"
 
     id: Optional[int] = Field(default=None, primary_key=True)
-    tipo: str
-    valor: float
-    data: str
+    tipo: str = Field(nullable=False)  # Tipo da movimentação
+    valor: float = Field(nullable=False)
+    data: datetime = Field(default=datetime.utcnow)  # Alterado para datetime
 
-    # Chave estrangeira para Conta
-    conta_id: int = Field(
-        foreign_key="conta.id"
-    )  # Atualizado para refletir o nome da tabela
+    conta_id: int = Field(foreign_key="conta.id")
+    conta: "Conta" = Relationship(back_populates="movimentacoes")
 
-    # Relacionamento com Conta
-    conta: Conta = Relationship(back_populates="movimentacoes")
-
-    # Chave estrangeira para Usuario
-    usuario_id: int = Field(
-        foreign_key="usuario.id"
-    )  # Atualizado para refletir o nome da tabela
-    usuario: Usuario = Relationship(back_populates="movimentacoes")
+    usuario_id: int = Field(foreign_key="usuario.id")
+    usuario: "Usuario" = Relationship(back_populates="movimentacoes")

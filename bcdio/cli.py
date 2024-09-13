@@ -17,6 +17,7 @@ click.rich_click.APPEND_METAVARS_HELP = True
 
 
 @click.group()
+@click.version_option("0.1.1")
 def main():
     """Sistema bancário DIO CLI
     ## Comandos
@@ -24,7 +25,8 @@ def main():
     - Para criar um novo usuário use o comando ->> bcdio criar-usuario
     - Para criar uma nova conta use o comando ->> bcdio criar-conta
     - Para ver seu relatório de contas use o comando ->> bcdio listar-contas
-    - Para depositar utilize o comando depositar e acrescente o valor exemplo ->> bcdio depositar 1000
+    - Para depositar utilize o comando depositar e acrescente o valor exemplo
+    ->> bcdio depositar 1000
     - Para sacar utilize o comando sacar e acrescente o valor exemplo ->> bcdio sacar 1000
     - Para mostrar o extrato utilize o comando ->> bcdio extrato
     - Para excluir um usuário utilize o comando ->> bcdio excluir-usuario
@@ -57,12 +59,28 @@ def depositar():
 
 
 @main.command()
-@click.argument("valor", type=float)
-def sacar(valor):
+def sacar():
     """Sacar um valor da conta"""
-    conta_id = click.prompt("Informe o ID da conta:", type=int)
-    result = sistema.sacar(conta_id, valor)
-    console.print(result, style="red")
+    cpf = click.prompt("Informe o CPF do usuário (somente números)", type=str)
+    numero_conta = click.prompt("Informe o número da conta", type=int)
+    valor = click.prompt("Informe o valor do saque", type=float)
+    try:
+        # Verifique se o usuário existe
+        usuario_id = sistema._obter_usuario_id_por_cpf(cpf)
+        if not usuario_id:
+            raise ValueError("Usuário não encontrado.")
+
+        # Realiza o saque
+        sistema.sacar(cpf, numero_conta, valor)
+
+        console.print(f"[bold green]Saque realizado com sucesso![/bold green]")
+        console.print(f"Valor: R${valor:.2f}")
+        console.print(f"Conta: {numero_conta}")
+
+    except ValueError as e:
+        console.print(f"[bold red]Erro:[/bold red] {e}")
+    except Exception as e:
+        console.print(f"[bold red]Erro:[/bold red] {e}")
 
 
 @main.command()
@@ -75,36 +93,43 @@ def extrato():
 
     try:
         saldo, movimentacoes = sistema.obter_extrato(cpf, numero_conta)
-        console.print(
-            f"Saldo da conta número [magenta]{numero_conta}[/magenta] para o CPF [magenta]{cpf}[/magenta]: [bold green]R${saldo:.2f}[/bold green]"
-        )
 
+        # Exibindo o saldo
+        table = Table(title="Extrato")
+        headers = ["Conta", "CPF", "Saldo"]
+        for header in headers:
+            table.add_column(header, style="magenta")
+
+        table.add_row(str(numero_conta), cpf, f"R${saldo:.2f}")
+        console.print(table)
+
+        # Exibindo movimentações, se houver
         if movimentacoes:
-            table = Table(show_header=True, header_style="bold magenta")
-            table.add_column("Tipo", style="dim", width=12)
-            table.add_column("Data", style="dim", width=20)
-            table.add_column("Valor", style="dim", width=12)
+            table = Table(title="Movimentações")
+            headers = ["Tipo", "Valor", "Data"]
+            for header in headers:
+                table.add_column(header, style="yellow", width=20)
 
             for mov in movimentacoes:
                 tipo = "Depósito" if mov.tipo == "deposito" else "Saque"
-                table.add_row(
-                    tipo, mov.data.strftime("%Y-%m-%d %H:%M:%S"), f"R${mov.valor:.2f}"
-                )
+                data_formatada = mov.data.strftime("%Y-%m-%d %H:%M:%S")
+                valor_formatado = f"R${mov.valor:.2f}"
+
+                table.add_row(tipo, valor_formatado, data_formatada)
 
             console.print(table)
         else:
             console.print(
-                f"[bold yellow]Não há movimentações para a conta número {numero_conta}.[/bold yellow]"
+                f"[bold yellow]Não há movimentações para a"
+                f"conta número{numero_conta}.[/bold yellow]"
             )
 
     except ValueError as e:
         console.print(f"[bold red]Erro:[/bold red] {e}")
 
 
-@main.command()
-def sair():
-    """Sair do sistema"""
-    console.print("Saindo do sistema...", style="yellow")
+# Adiciona o comando 'extrato' ao grupo principal
+main.add_command(extrato)
 
 
 @main.command()
