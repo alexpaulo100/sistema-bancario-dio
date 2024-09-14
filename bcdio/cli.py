@@ -73,7 +73,7 @@ def sacar():
         # Realiza o saque
         sistema.sacar(cpf, numero_conta, valor)
 
-        console.print(f"[bold green]Saque realizado com sucesso![/bold green]")
+        console.print("[bold green]Saque realizado com sucesso![/bold green]")
         console.print(f"Valor: R${valor:.2f}")
         console.print(f"Conta: {numero_conta}")
 
@@ -155,12 +155,14 @@ def criar_usuario():
 
 
 @main.command()
-@click.argument("cpf", type=str)
-def excluir_usuario(cpf):
+def excluir_usuario():
     """Excluir um usuário do sistema"""
+    cpf = click.prompt("Informe o CPF do usuário (somente números)", type=str)
+
     try:
         resultado = sistema.excluir_usuario(cpf)
-        console.print(resultado, style="green")
+        if resultado:  # Verifica se o resultado não é None
+            console.print(resultado, style="green")
     except ValueError as e:
         console.print(f"Erro ao excluir usuário: {e}", style="red")
 
@@ -181,34 +183,51 @@ def criar_conta():
 
 @main.command()
 def excluir_conta():
-    """Excluir uma conta bancária"""
-    cpf = click.prompt("Informe o CPF do usuário (somente números)")
-    numero_conta = click.prompt("Informe o número da conta a ser excluída", type=int)
+    """Exclui uma conta bancária"""
+    cpf = click.prompt("Informe o CPF do usuário (somente números):", type=str)
+    numero_conta = click.prompt("Informe o número da conta a ser excluída:", type=int)
 
-    # sistema = SistemaBancario(session)  # Supondo que você tenha uma sessão inicializada
-    sucesso = sistema.excluir_conta(cpf, numero_conta)
-
-    if sucesso:
-        click.echo(
-            click.style(
-                f"Conta número {numero_conta} excluída com sucesso.", fg="magenta"
-            )
-        )
-    else:
-        click.echo(
-            click.style(
-                f"Conta número {numero_conta} não encontrada para o CPF {cpf}.",
-                fg="magenta",
-            )
-        )
+    try:
+        resultado = sistema.excluir_conta(cpf, numero_conta)
+        click.echo(resultado)
+    except ValueError as e:
+        click.echo(f"Erro: {e}")
+    except Exception as e:
+        click.echo(f"Erro inesperado: {e}")
 
 
 @main.command()
 def listar_contas():
     """Relatório de suas contas"""
     cpf = click.prompt("Informe o CPF do usuário (somente números):", type=str)
-    result = sistema.listar_contas(cpf)
-    console.print(result, style="magenta")
+
+    try:
+        # Chama o método listar_contas e captura o retorno
+        contas = sistema.listar_contas(cpf)
+
+        if isinstance(contas, str):
+            click.echo(contas)
+            return
+
+        table = Table(title="Contas do Usuário", caption="Relatório de Contas")
+        table.add_column("Nome", style="cyan bold", no_wrap=True)
+        table.add_column("Número", style="cyan bold", no_wrap=True)
+        table.add_column("Agência", style="magenta")
+        table.add_column("Saldo", style="green")
+
+        for conta in contas:
+            nome = conta.get("nome", "N/A")
+            numero = conta.get("numero", "N/A")
+            agencia = conta.get("agencia", "N/A")
+            saldo = f"R$ {conta.get('saldo', 0.0):.2f}"
+            table.add_row(nome, str(numero), agencia, saldo)
+
+        console.print(table)
+
+    except ValueError as e:
+        click.echo(f"Erro: {e}")
+    except Exception as e:
+        click.echo(f"Erro inesperado: {e}")
 
 
 if __name__ == "__main__":

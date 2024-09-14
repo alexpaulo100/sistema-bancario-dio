@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
 
 from sqlmodel import Field, Relationship, SQLModel
@@ -50,7 +50,7 @@ class Movimentacao(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     tipo: str = Field(nullable=False)  # Tipo da movimentação
     valor: float = Field(nullable=False)
-    data: datetime = Field(default=datetime.utcnow)  # Alterado para datetime
+    data: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
     conta_id: int = Field(foreign_key="conta.id")
     conta: "Conta" = Relationship(back_populates="movimentacoes")
