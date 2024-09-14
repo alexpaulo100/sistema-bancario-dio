@@ -38,12 +38,15 @@ class SistemaBancario:
             # Buscar conta
             conta = session.exec(
                 select(Conta).where(
-                    Conta.usuario_id == usuario_id, Conta.numero == numero_conta
+                    Conta.usuario_id == usuario_id,
+                    Conta.numero == numero_conta,
                 )
             ).first()
 
             if not conta:
-                raise ValueError(f"Conta número {numero_conta} não encontrada.")
+                raise ValueError(
+                    f"Conta número {numero_conta} não encontrada."
+                )
 
             saldo = conta.saldo
 
@@ -116,17 +119,22 @@ class SistemaBancario:
     def exibir_movimentacoes(self, movimentacoes):
         for mov in movimentacoes:
             utc_time = mov.data
-            print(f"Tipo: {mov.tipo} | Valor: R${mov.valor:.2f} | Data UTC: {utc_time}")
+            print(
+                f"Tipo: {mov.tipo} | Valor: R${mov.valor:.2f}"
+                "| Data UTC: {utc_time}"
+            )
 
             if isinstance(utc_time, datetime):
                 if utc_time.tzinfo is not None:
-                    local_time = self.convert_utc_to_local(utc_time)
                     print(
-                        f"Tipo: {mov.tipo} | Valor: R${mov.valor:.2f} | Data Local: {local_time.strftime('%Y-%m-%d %H:%M:%S')}"
+                        f"Tipo: {mov.tipo} | Valor: R${mov.valor:.2f} | "
+                        "Data Local:"
+                        "{local_time.strftime('%Y-%m-%d %H:%M:%S')}"
                     )
                 else:
                     print(
-                        f"Erro: A data {utc_time} não tem informações de fuso horário."
+                        f"Erro: A data {utc_time} não tem informações"
+                        "de fuso horário."
                     )
             else:
                 print(f"Erro: A data {utc_time} não é um datetime válido.")
@@ -134,11 +142,12 @@ class SistemaBancario:
     def excluir_usuario(self, cpf: str) -> str:
         with self.session as session:
             # Verifica se o usuário existe
-            usuario = session.exec(select(Usuario).where(Usuario.cpf == cpf)).first()
+            usuario = session.exec(
+                select(Usuario).where(Usuario.cpf == cpf)
+            ).first()
             if not usuario:
-                return f"Usuário com CPF {cpf} não encontrado."  # Mensagem informativa
+                return f"Usuário com CPF {cpf} não encontrado."
 
-            # Verifica se o usuário possui contas associadas
             contas = session.exec(
                 select(Conta).where(Conta.usuario_id == usuario.id)
             ).all()
@@ -151,11 +160,14 @@ class SistemaBancario:
 
                 if contas_com_saldo:
                     return (
-                        "O usuário possui contas com saldo. É necessário realizar o saque ou transferir o saldo dessas contas antes de prosseguir com a exclusão. "
-                        "Por favor, primeiro faça o saque do saldo das suas contas e exclua as contas antes de tentar excluir o usuário novamente."
+                        "O usuário possui contas com saldo."
+                        "É necessário realizar o saque ou transferir o saldo"
+                        "dessas contas antes de prosseguir com a exclusão. "
+                        "Por favor, primeiro faça o saque do saldo das suas "
+                        "contas e exclua as contas antes de tentar"
+                        " excluir o usuário novamente."
                     )
 
-                # Se não há contas com saldo ou todas foram adequadamente tratadas
                 for conta in contas:
                     session.delete(conta)
 
@@ -167,7 +179,9 @@ class SistemaBancario:
     def criar_conta(self, cpf):
         with self.session as session:
             # Verifica se o usuário com o CPF informado existe
-            usuario = session.exec(select(Usuario).where(Usuario.cpf == cpf)).first()
+            usuario = session.exec(
+                select(Usuario).where(Usuario.cpf == cpf)
+            ).first()
             if not usuario:
                 raise ValueError(f"Usuário com CPF {cpf} não encontrado.")
 
@@ -206,11 +220,16 @@ class SistemaBancario:
                 return f"Conta número {numero_conta} excluída com sucesso."
             else:
                 return (
-                    f"Não é possível excluir a conta número {numero_conta} porque o saldo não é zero. "
-                    f"O saldo atual é R$ {conta.saldo:.2f}. Por favor, faça um saque ou transferência do saldo antes de excluir a conta."
+                    f"Não é possível excluir a conta número {numero_conta}"
+                    " porque o saldo não é zero. "
+                    f"O saldo atual é R$ {conta.saldo:.2f}. Por favor,"
+                    "faça um saque ou transferência do saldo"
+                    "antes de excluir a conta."
                 )
         else:
-            return f"Conta número {numero_conta} não encontrada para o CPF {cpf}."
+            return (
+                f"Conta número {numero_conta} não encontrada para o CPF {cpf}."
+            )
 
     def sacar(self, cpf: str, numero_conta: int, valor: float):
         with self.session as session:
@@ -220,7 +239,8 @@ class SistemaBancario:
             # Busca a conta com o número fornecido e do usuário especificado
             conta = session.exec(
                 select(Conta).where(
-                    Conta.numero == numero_conta, Conta.usuario_id == usuario_id
+                    Conta.numero == numero_conta,
+                    Conta.usuario_id == usuario_id,
                 )
             ).first()
 
@@ -232,7 +252,9 @@ class SistemaBancario:
 
             if valor > self.limite:
                 raise ValueError(
-                    f"Não foi possível realizar o saque de R$ {valor:.2f}, pois excede o limite de R$ {self.limite:.2f}. Saldo atual: R$ {conta.saldo:.2f}"
+                    f"Não foi possível realizar o saque de R$ {valor:.2f},"
+                    "pois excede o limite de R$ {self.limite:.2f},"
+                    ".Saldo atual: R$ {conta.saldo:.2f}"
                 )
 
             if valor > conta.saldo:

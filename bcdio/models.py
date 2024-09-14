@@ -21,7 +21,9 @@ class Usuario(SQLModel, table=True):
     contas: List["Conta"] = Relationship(back_populates="usuario")
 
     # Relacionamento com Movimentacao
-    movimentacoes: List["Movimentacao"] = Relationship(back_populates="usuario")
+    movimentacoes: List["Movimentacao"] = Relationship(
+        back_populates="usuario"
+    )
 
 
 class Conta(SQLModel, table=True):

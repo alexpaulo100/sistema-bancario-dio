@@ -7,7 +7,9 @@ def add_usuarios(session: Session, instance: Usuario):
     """Salvar usuários no banco de dados.
     - Se o usuário já existir, atualiza. Se não, cria um novo.
     """
-    existing = session.exec(select(Usuario).where(Usuario.cpf == instance.cpf)).first()
+    existing = session.exec(
+        select(Usuario).where(Usuario.cpf == instance.cpf)
+    ).first()
     created = existing is None
     if created:
         session.add(instance)

@@ -27,7 +27,8 @@ def main():
     - Para ver seu relatório de contas use o comando ->> bcdio listar-contas
     - Para depositar utilize o comando depositar e acrescente o valor exemplo
     ->> bcdio depositar 1000
-    - Para sacar utilize o comando sacar e acrescente o valor exemplo ->> bcdio sacar 1000
+    - Para sacar utilize o comando sacar e acrescente o valor exemplo
+    - ->> bcdio sacar 1000
     - Para mostrar o extrato utilize o comando ->> bcdio extrato
     - Para excluir um usuário utilize o comando ->> bcdio excluir-usuario
     - Para excluir uma conta utilize o comando ->> bcdio excluir-conta
@@ -50,7 +51,8 @@ def depositar():
         sistema.depositar(cpf, numero_conta, valor)
         click.echo(
             click.style(
-                f"Depósito de R$ {valor:.2f} realizado com sucesso na conta número {numero_conta}.",
+                f"Depósito de R$ {valor:.2f} realizado com sucesso na "
+                f"conta número {numero_conta}.",
                 fg="green",
             )
         )
@@ -137,19 +139,27 @@ def criar_usuario():
     """Criar um novo usuário"""
     nome = click.prompt("Informe seu nome completo")
     cpf = click.prompt("Informe seu CPF (somente números)")
-    data_nascimento = click.prompt("Informe sua data de nascimento (dd-mm-aaaa)")
+    data_nascimento = click.prompt(
+        "Informe sua data de nascimento (dd-mm-aaaa)"
+    )
 
     endereco = {
         "logradouro": click.prompt("Informe seu logradouro"),
         "numero": click.prompt("Informe o número"),
         "bairro": click.prompt("Informe seu bairro"),
         "cidade": click.prompt("Informe a cidade"),
-        "estado": click.prompt("Informe o estado (somente a sigla, exemplo: SP)"),
+        "estado": click.prompt(
+            "Informe o estado (somente a sigla, exemplo: SP)"
+        ),
     }
 
     try:
-        novo_usuario = sistema.criar_usuario(nome, cpf, data_nascimento, endereco)
-        console.print(f"Usuário {novo_usuario.nome} criado com sucesso!", style="green")
+        novo_usuario = sistema.criar_usuario(
+            nome, cpf, data_nascimento, endereco
+        )
+        console.print(
+            f"Usuário {novo_usuario.nome} criado com sucesso!", style="green"
+        )
     except ValueError as e:
         console.print(f"Erro ao criar usuário: {e}", style="red")
 
@@ -185,7 +195,9 @@ def criar_conta():
 def excluir_conta():
     """Exclui uma conta bancária"""
     cpf = click.prompt("Informe o CPF do usuário (somente números):", type=str)
-    numero_conta = click.prompt("Informe o número da conta a ser excluída:", type=int)
+    numero_conta = click.prompt(
+        "Informe o número da conta a ser excluída:", type=int
+    )
 
     try:
         resultado = sistema.excluir_conta(cpf, numero_conta)
