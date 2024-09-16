@@ -102,4 +102,5 @@ Crie um ambiente virtual para isolar as dependências do projeto:
 
 **version=[0.1.1]**
 
-![bcdio-version-0 1 1](https://github.com/user-attachments/assets/264e4c4f-0501-43be-94b1-c807b3b3b961)
+![2-ezgif com-animated-gif-maker](https://github.com/user-attachments/assets/a37aad63-053f-4d2b-9b15-ff3595474fcc)
+
