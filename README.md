@@ -3,6 +3,8 @@
 **Sistema bancário em linha de comando com Python**
 
 Utilizado **rich-click** para uma melhor experiência do usuário em linha de comando.
+- [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+
 
 ## Descrição dos Comandos
 
@@ -41,6 +43,9 @@ Utilizado **rich-click** para uma melhor experiência do usuário em linha de co
   - Excluir conta
 - **Persistência de Dados**: Implementada persistência usando o banco de dados SQLite.
 - **Depósito Interativo**: Implementado o comando de depósito com entrada interativa para CPF e número da conta.
+
+
+  
   
 
 ---
