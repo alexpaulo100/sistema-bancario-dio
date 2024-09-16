@@ -35,7 +35,7 @@ Crie um ambiente virtual para isolar as dependências do projeto:
 
 **Ative o ambiente virtual:**
 - No Windows:
-`.venv\Scripts\activate`
+`.venv\Scripts\Activate.ps1`
 - No macOS/Linux:
 `source .venv/bin/activate`
 
