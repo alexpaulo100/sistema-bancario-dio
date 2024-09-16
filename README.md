@@ -2,9 +2,52 @@
 
 **Sistema bancário em linha de comando com Python**
 
-Utilizado **rich-click** para uma melhor experiência do usuário em linha de comando.
+#### Ferramentas Utilizadas ####
+
+**rich-click**
+
+Para uma melhor experiência do usuário em linha de comando.
+
+**ruff**
+
+Este projeto utiliza o Ruff para linting e análise de código.
+Ruff é uma ferramenta de linting rápida e eficiente para Python, que ajuda a garantir que o código siga as melhores práticas e padrões de codificação.
 - [![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
 
+
+**Instalação**
+#### Siga os passos abaixo para instalar e configurar o ambiente necessário para executar o projeto:
+
+**Clone o Repositório**
+
+`git clone
+https://github.com/alexpaulo100/sistema-bancario-dio.git`
+
+**Entre no diretorio**
+
+`cd sistema-bancario-dio`
+
+**Crie e Ative um Ambiente Virtual**
+
+Crie um ambiente virtual para isolar as dependências do projeto:
+
+`python -m venv .venv`
+
+**Ative o ambiente virtual:**
+- No Windows:
+`.venv\Scripts\activate`
+- No macOS/Linux:
+`source .venv/bin/activate`
+
+**Instale as Dependências**
+- Com o ambiente virtual ativado, instale as dependências listadas no requirements.txt:
+
+`pip install -r requirements.txt`
+
+**Executar o Comando bcdio**
+- Agora você pode executar o comando bcdio no terminal para interagir com o sistema bancário:
+`bcdio --help`
+- Isso exibirá a lista de comandos disponíveis e suas descrições.
 
 ## Descrição dos Comandos
 
@@ -45,12 +88,12 @@ Utilizado **rich-click** para uma melhor experiência do usuário em linha de co
 - **Depósito Interativo**: Implementado o comando de depósito com entrada interativa para CPF e número da conta.
 
 
-  
-  
+
+
 
 ---
 
-**Autor**: Alex Silva  
+**Autor**: Alex Silva
 [LinkedIn](https://www.linkedin.com/in/alexpaulo100/)
 
 **version=[0.1.0]**
