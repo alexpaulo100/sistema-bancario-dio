@@ -1,6 +1,17 @@
-from sqlmodel import Session, select
-
+from sqlmodel import create_engine, Session, select
 from bcdio.models import Movimentacao, Usuario
+
+
+# Ajuste o caminho para o banco de dados conforme necessário
+DATABASE_URL = "sqlite:////home/alextech/projetos/projeto-link/sistema-bancario-dio/assets/bcdio.db"
+
+# Criação do engine com SQLModel
+engine = create_engine(DATABASE_URL, echo=True)
+
+
+# Função para obter a sessão
+def get_session():
+    return Session(engine)
 
 
 def add_usuarios(session: Session, instance: Usuario):
@@ -10,6 +21,7 @@ def add_usuarios(session: Session, instance: Usuario):
     existing = session.exec(
         select(Usuario).where(Usuario.cpf == instance.cpf)
     ).first()
+
     created = existing is None
     if created:
         session.add(instance)
@@ -17,6 +29,8 @@ def add_usuarios(session: Session, instance: Usuario):
     else:
         existing.contas = instance.contas
         session.add(existing)
+        session.refresh(existing)
+
     session.commit()
     return instance, created
 
@@ -54,6 +68,7 @@ def add_movimentacao(
         existing_moviment.saldo = total
         session.add(existing_moviment)
     else:
+        # Garantir que estamos adicionando a movimentação final
         session.add(Movimentacao(usuario=usuario, saldo=total))
 
     session.commit()

@@ -18,16 +18,15 @@ Ruff é uma ferramenta de linting rápida e eficiente para Python, que ajuda a g
 **Instalação**
 #### Siga os passos abaixo para instalar e configurar o ambiente necessário para executar o projeto:
 
-**Clone o Repositório**
+**1.Clone o Repositório**
 
-`git clone
-https://github.com/alexpaulo100/sistema-bancario-dio.git`
+`git clone https://github.com/alexpaulo100/sistema-bancario-dio.git`
 
 **Entre no diretorio**
 
 `cd sistema-bancario-dio`
 
-**Crie e Ative um Ambiente Virtual**
+**2.Crie e Ative um Ambiente Virtual**
 
 Crie um ambiente virtual para isolar as dependências do projeto:
 
@@ -39,14 +38,32 @@ Crie um ambiente virtual para isolar as dependências do projeto:
 - No macOS/Linux:
 `source .venv/bin/activate`
 
-**Instale as Dependências**
+**3.Instale as Dependências**
 - Com o ambiente virtual ativado, instale as dependências listadas no requirements.txt:
 
 `pip install -r requirements.txt`
 
+**4.Instale o Pacote `bcdio`**
+
+- Instale o pacote `bcdio` no modo "editable" usando o `setup.py`:
+`pip install -e .`
+
+- Isso garantirá que o comando `bcdio` esteja disponível no terminal.
+
+## Configuração do PYTHONPATH
+
+- Para garantir que o comando `bcdio` funcione corretamente, você precisa configurar a variável de ambiente `PYTHONPATH`. Isso permite que o Python encontre o módulo bcdio no diretório do projeto.
+
+**Exporte o PYTHONPATH**
+- No terminal, execute o seguinte comando:
+  `export PYTHONPATH=$(pwd):$PYTHONPATH`
+- Isso adiciona o diretório do projeto ao PYTHONPATH, permitindo que o Python encontre o módulo `bcdio`.
+- Depois, recarregue o arquivo:
+  `source ~/.bashrc`
+
 **Executar o Comando bcdio**
 - Agora você pode executar o comando bcdio no terminal para interagir com o sistema bancário:
-`bcdio --help`
+  `bcdio --help`
 - Isso exibirá a lista de comandos disponíveis e suas descrições.
 
 ## Descrição dos Comandos
